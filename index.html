@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Perpustakaan Digital SMA Negeri 3 Manado</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1e40af',
+                        accent: '#3b82f6'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .smooth-transition {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+    <!-- Header/Navbar -->
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/dcec14d0-faa8-4e20-a079-2fd6b6a5830d.png" alt="Logo Perpustakaan SMA Negeri 3 Manado" class="h-10 w-10">
+                <h1 class="text-xl font-bold text-primary">DigiLib SMA 3 Manado</h1>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#" class="text-gray-700 hover:text-primary smooth-transition">Beranda</a>
+                <a href="#" class="text-gray-700 hover:text-primary smooth-transition">Katalog</a>
+                <a href="#" class="text-gray-700 hover:text-primary smooth-transition">Peminjaman</a>
+                <div class="dropdown relative">
+                    <button class="text-gray-700 hover:text-primary smooth-transition flex items-center">
+                        Admin <i class="fas fa-chevron-down ml-1 text-sm"></i>
+                    </button>
+                    <div class="dropdown-menu absolute hidden bg-white shadow-lg rounded mt-2 py-2 w-48">
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 smooth-transition">Kelola Buku</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 smooth-transition">Kelola Anggota</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 smooth-transition">Statistik</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <a href="#" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary smooth-transition" id="loginBtn">Login</a>
+                <button class="md:hidden text-gray-700">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Login Modal -->
+        <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-primary">Masuk ke Sistem</h2>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" name="email" required 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="password" name="password" required 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" name="remember" type="checkbox" 
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                            <label for="remember" class="ml-2 block text-sm text-gray-700">Ingat saya</label>
+                        </div>
+                        <a href="#" class="text-sm text-primary hover:text-secondary">Lupa password?</a>
+                    </div>
+                    <div>
+                        <button type="submit" 
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                            Masuk
+                        </button>
+                    </div>
+                </form>
+                <div class="mt-4 text-center text-sm">
+                    <p class="text-gray-600">Belum punya akun? <a href="#" class="text-primary hover:text-secondary font-medium">Daftar sekarang</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-r from-primary to-secondary text-white rounded-xl p-8 mb-10">
+            <div class="max-w-2xl">
+                <h1 class="text-4xl font-bold mb-4">Selamat Datang di Perpustakaan Digital</h1>
+                <p class="text-lg mb-6">Akses ribuan koleksi buku digital SMA Negeri 3 Manado kapan saja dan di mana saja.</p>
+                <div class="flex space-x-4">
+                    <button class="bg-white text-primary px-6 py-3 rounded-lg font-medium hover:bg-gray-100 smooth-transition">Lihat Katalog</button>
+                    <button class="border-2 border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-primary smooth-transition">Pelajari Lebih Lanjut</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Book Categories -->
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Kategori Buku</h2>
+                <a href="#" class="text-primary hover:text-secondary flex items-center">
+                    Lihat semua <i class="fas fa-chevron-right ml-1"></i>
+                </a>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg smooth-transition cursor-pointer">
+                    <div class="bg-blue-100 text-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-book text-2xl"></i>
+                    </div>
+                    <p class="font-medium">Fiksi</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg smooth-transition cursor-pointer">
+                    <div class="bg-blue-100 text-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-flask text-2xl"></i>
+                    </div>
+                    <p class="font-medium">Sains</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg smooth-transition cursor-pointer">
+                    <div class="bg-blue-100 text-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-calculator text-2xl"></i>
+                    </div>
+                    <p class="font-medium">Matematika</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg smooth-transition cursor-pointer">
+                    <div class="bg-blue-100 text-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-globe-asia text-2xl"></i>
+                    </div>
+                    <p class="font-medium">Sejarah</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg smooth-transition cursor-pointer">
+                    <div class="bg-blue-100 text-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-paint-brush text-2xl"></i>
+                    </div>
+                    <p class="font-medium">Seni</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-lg smooth-transition cursor-pointer">
+                    <div class="bg-blue-100 text-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-code text-2xl"></i>
+                    </div>
+                    <p class="font-medium">Teknologi</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Books -->
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Buku Terpopuler</h2>
+                <a href="#" class="text-primary hover:text-secondary flex items-center">
+                    Lihat semua <i class="fas fa-chevron-right ml-1"></i>
+                </a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Book Card 1 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden book-card smooth-transition">
+                    <div class="h-48 bg-gray-200 relative">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d55777ba-1cea-4dd5-bd86-639ff8e3a0a8.png" alt="Sampul buku Harry Potter and the Philosophers Stone" class="w-full h-full object-cover">
+                        <div class="absolute top-2 right-2 bg-yellow-400 text-xs font-bold px-2 py-1 rounded flex items-center">
+                            <i class="fas fa-star mr-1"></i> 4.8
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Harry Potter and the Philosopher's Stone</h3>
+                        <p class="text-gray-600 text-sm mb-2">J.K. Rowling</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">Fiksi</span>
+                            <button class="text-primary text-sm font-medium hover:text-secondary">
+                                <i class="fas fa-book-reader mr-1"></i> Pinjam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Book Card 2 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden book-card smooth-transition">
+                    <div class="h-48 bg-gray-200">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e5e33799-d2ad-4bd9-b66c-b7950d4eda84.png" alt="Sampul buku Clean Code" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Clean Code</h3>
+                        <p class="text-gray-600 text-sm mb-2">Robert C. Martin</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">Teknologi</span>
+                            <button class="text-primary text-sm font-medium hover:text-secondary">
+                                <i class="fas fa-book-reader mr-1"></i> Pinjam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Book Card 3 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden book-card smooth-transition">
+                    <div class="h-48 bg-gray-200 relative">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/cf4df001-57ef-4667-a196-0371921b2505.png" alt="Sampul buku Cosmos" class="w-full h-full object-cover">
+                        <div class="absolute top-2 right-2 bg-yellow-400 text-xs font-bold px-2 py-1 rounded flex items-center">
+                            <i class="fas fa-star mr-1"></i> 4.9
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Cosmos</h3>
+                        <p class="text-gray-600 text-sm mb-2">Carl Sagan</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">Sains</span>
+                            <button class="text-primary text-sm font-medium hover:text-secondary">
+                                <i class="fas fa-book-reader mr-1"></i> Pinjam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Book Card 4 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden book-card smooth-transition">
+                    <div class="h-48 bg-gray-200">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/890d9dee-b827-42f1-8e51-565e41a52942.png" alt="Sampul buku Seni Hidup Sederhana" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Seni Hidup Sederhana</h3>
+                        <p class="text-gray-600 text-sm mb-2">Fumio Sasaki</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">Pengembangan Diri</span>
+                            <button class="text-primary text-sm font-medium hover:text-secondary">
+                                <i class="fas fa-book-reader mr-1"></i> Pinjam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Library Stats -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Statistik Perpustakaan</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="font-semibold text-gray-700 mb-3">Total Koleksi Buku</h3>
+                    <div class="flex items-center">
+                        <div class="bg-blue-100 text-primary rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                            <i class="fas fa-book text-xl"></i>
+                        </div>
+                        <span class="text-3xl font-bold">1,248</span>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="font-semibold text-gray-700 mb-3">Peminjaman Aktif</h3>
+                    <div class="flex items-center">
+                        <div class="bg-blue-100 text-primary rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                            <i class="fas fa-book-open text-xl"></i>
+                        </div>
+                        <span class="text-3xl font-bold">326</span>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="font-semibold text-gray-700 mb-3">Anggota Aktif</h3>
+                    <div class="flex items-center">
+                        <div class="bg-blue-100 text-primary rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                            <i class="fas fa-users text-xl"></i>
+                        </div>
+                        <span class="text-3xl font-bold">587</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 bg-white p-6 rounded-xl shadow-md">
+                <h3 class="font-semibold text-gray-700 mb-4">Buku Terpopuler Minggu Ini</h3>
+                <canvas id="bookChart" height="300"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Perpustakaan Digital</h3>
+                    <p class="text-gray-300">SMA Negeri 3 Manado</p>
+                    <p class="text-gray-300 mt-2">Jl. Pendidikan No. 1, Manado</p>
+                    <p class="text-gray-300">Sulawesi Utara, Indonesia</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Tautan Cepat</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-primary smooth-transition">Beranda</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary smooth-transition">Katalog</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary smooth-transition">Peminjaman</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-primary smooth-transition">Kontak</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <i class="fas fa-phone-alt mr-3 text-primary"></i>
+                            <span class="text-gray-300">(0431) 841234</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-primary"></i>
+                            <span class="text-gray-300">perpustakaan@sman3manado.sch.id</span>
+                        </div>
+                        <div class="flex items-center mt-4 space-x-4">
+                            <a href="#" class="text-gray-300 hover:text-primary smooth-transition">
+                                <i class="fab fa-facebook-f text-xl"></i>
+                            </a>
+                            <a href="#" class="text-gray-300 hover:text-primary smooth-transition">
+                                <i class="fab fa-instagram text-xl"></i>
+                            </a>
+                            <a href="#" class="text-gray-300 hover:text-primary smooth-transition">
+                                <i class="fab fa-twitter text-xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>&copy; 2023 Sistem Perpustakaan Digital SMA Negeri 3 Manado. Seluruh hak cipta dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+     <!-- JavaScript Modul -->
+    <script type="module" src="/js/app.js"></script>
+</body>
+</html>
